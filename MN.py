@@ -21,6 +21,11 @@ def download_video(url, resolution):
     ydl_opts = {
         'format': selected_format,
         'outtmpl': '/storage/emulated/0/Download/%(title)s.%(ext)s',  # Save to Download folder
+        'merge_output_format': 'mp4',  # Merge video and audio into MP4 format
+        'postprocessors': [{
+            'key': 'FFmpegVideoConvertor',
+            'preferedformat': 'mp4',  # Ensure the format is mp4
+        }],
     }
 
     try:
