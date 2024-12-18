@@ -6,26 +6,29 @@ from colorama import Fore, init
 init(autoreset=True)
 
 def download_video(url, resolution):
+    # Select the best video and audio quality based on user choice
     formats = {
-        '480p': 'bestaudio[ext=m4a]/best[height<=480]',
-        '720p': 'bestaudio[ext=m4a]/best[height<=720]',
-        '1080p': 'bestaudio[ext=m4a]/best[height<=1080]'
+        '480p': 'bestvideo[height<=480]+bestaudio/best[height<=480]',
+        '720p': 'bestvideo[height<=720]+bestaudio/best[height<=720]',
+        '1080p': 'bestvideo[height<=1080]+bestaudio/best[height<=1080]',
     }
 
     if resolution in formats:
         selected_format = formats[resolution]
     else:
         print(f"{Fore.RED}Resolution {resolution} is not available. Defaulting to best quality.")
-        selected_format = 'best'
+        selected_format = 'bestvideo+bestaudio/best'
 
     ydl_opts = {
-        'format': selected_format,
+        'format': selected_format,  # Ensure best video and audio are downloaded
         'outtmpl': '/storage/emulated/0/Download/%(title)s.%(ext)s',  # Save to Download folder
-        'merge_output_format': 'mp4',  # Merge video and audio into MP4 format
+        'merge_output_format': 'mp4',  # Ensure the output format is MP4
         'postprocessors': [{
-            'key': 'FFmpegVideoConvertor',
-            'preferedformat': 'mp4',  # Ensure the format is mp4
+            'key': 'FFmpegVideoConvertor',  # Use FFmpeg to merge audio and video
+            'preferedformat': 'mp4',  # Convert to MP4 format
         }],
+        'noplaylist': True,  # Avoid downloading entire playlists
+        'quiet': False,  # Show detailed progress
     }
 
     try:
