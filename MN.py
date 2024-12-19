@@ -1,7 +1,7 @@
 import yt_dlp
 import os
 
-def download_video(url, output_dir="/storage/emulated/0/Downloads"):
+def download_video(url, output_dir="/storage/emulated/0/Download"):
     """
     Downloads a video from YouTube or Instagram using yt-dlp.
 
@@ -44,7 +44,7 @@ def main():
     url = input("Enter the URL of the video: ").strip()
 
     # Set the default output directory to Android storage
-    output_dir = "/storage/emulated/0/Downloads"
+    output_dir = "/storage/emulated/0/Download"
 
     # Check if the URL is an Instagram link
     if is_instagram_url(url):
