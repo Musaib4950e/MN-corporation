@@ -36,12 +36,31 @@ print_colored("3. Exit", RED)
 # Get user input
 choice = input("\nEnter your choice (1/2/3): ")
 
-# Define function to download from YouTube in MP4
+# Define function to download from YouTube in MP4 with quality options
 def download_youtube(url):
-    print_colored("\nDownloading from YouTube...", CYAN)
+    print_colored("\nSelect video quality:", GREEN)
+    print_colored("1. 480p", CYAN)
+    print_colored("2. 720p", CYAN)
+    print_colored("3. 1080p", CYAN)
+
+    # Get quality choice from user
+    quality_choice = input("\nEnter your choice (1/2/3): ")
+
+    # Determine format based on user selection
+    if quality_choice == '1':
+        format_choice = 'bestaudio[ext=m4a]+bestvideo[height<=480][ext=mp4]/best[height<=480]'
+    elif quality_choice == '2':
+        format_choice = 'bestaudio[ext=m4a]+bestvideo[height<=720][ext=mp4]/best[height<=720]'
+    elif quality_choice == '3':
+        format_choice = 'bestaudio[ext=m4a]+bestvideo[height<=1080][ext=mp4]/best[height<=1080]'
+    else:
+        print_colored("Invalid choice, defaulting to 720p.", YELLOW)
+        format_choice = 'bestaudio[ext=m4a]+bestvideo[height<=720][ext=mp4]/best[height<=720]'
+
+    print_colored(f"\nDownloading in {quality_choice}p quality...", CYAN)
     try:
-        # Download the best video in MP4 format using yt-dlp
-        subprocess.run(['yt-dlp', '-f', 'bestvideo+bestaudio/best', '--merge-output-format', 'mp4', url], check=True)
+        # Download the selected format
+        subprocess.run(['yt-dlp', '-f', format_choice, '--merge-output-format', 'mp4', url], check=True)
         print_colored("Download complete in MP4 format!", GREEN)
     except subprocess.CalledProcessError:
         print_colored("Error downloading YouTube video.", RED)
