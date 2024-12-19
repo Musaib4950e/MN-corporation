@@ -1,60 +1,70 @@
-import yt_dlp
 import os
+import subprocess
+import sys
+import pyfiglet  # Import pyfiglet for big font text generation
 
-def download_video(url, output_dir="/storage/emulated/0/Download"):
-    """
-    Downloads a video from YouTube or Instagram using yt-dlp.
+# Function to print colorful text
+def print_colored(text, color_code):
+    print(f"\033[{color_code}m{text}\033[0m")
 
-    Args:
-        url (str): The URL of the video.
-        output_dir (str): Directory to save the downloaded video.
-    """
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
+# Clear the screen
+os.system('clear')
 
-    # Set options for yt-dlp
-    ydl_opts = {
-        'outtmpl': os.path.join(output_dir, '%(title)s.%(ext)s'),
-        'format': 'bestvideo+bestaudio/best',
-        'merge_output_format': 'mp4',  # Merge audio and video into mp4
-    }
+# Define color codes
+RED = '31'
+GREEN = '32'
+YELLOW = '33'
+BLUE = '34'
+MAGENTA = '35'
+CYAN = '36'
+RESET = '0'
 
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        try:
-            print(f"Downloading from: {url}")
-            ydl.download([url])
-            print(f"Download complete! Saved in {output_dir}")
-        except Exception as e:
-            print(f"Error downloading video: {e}")
+# Display company name in big font using pyfiglet
+company_name = pyfiglet.figlet_format("MN CORPORATION")
+print_colored(company_name, MAGENTA)
 
-def is_instagram_url(url):
-    """
-    Check if the URL is an Instagram URL.
+# Welcome message
+print_colored("\nWelcome to the Ultimate Downloader!", CYAN)
+print_colored("This tool allows you to download videos and audio from YouTube and Instagram.", YELLOW)
 
-    Args:
-        url (str): The URL to check.
+# Display options
+print_colored("\nChoose an option:", GREEN)
+print_colored("1. Download from YouTube", CYAN)
+print_colored("2. Download from Instagram", YELLOW)
+print_colored("3. Exit", RED)
 
-    Returns:
-        bool: True if the URL is from Instagram, False otherwise.
-    """
-    return 'instagram.com' in url
+# Get user input
+choice = input("\nEnter your choice (1/2/3): ")
 
-def main():
-    print("=== Video Downloader (YouTube & Instagram) ===")
-    url = input("Enter the URL of the video: ").strip()
+# Define function to download from YouTube in MP4
+def download_youtube(url):
+    print_colored("\nDownloading from YouTube...", CYAN)
+    try:
+        # Download the best video in MP4 format using yt-dlp
+        subprocess.run(['yt-dlp', '-f', 'bestvideo+bestaudio/best', '--merge-output-format', 'mp4', url], check=True)
+        print_colored("Download complete in MP4 format!", GREEN)
+    except subprocess.CalledProcessError:
+        print_colored("Error downloading YouTube video.", RED)
 
-    # Set the default output directory to Android storage
-    output_dir = "/storage/emulated/0/Download"
+# Define function to download from Instagram
+def download_instagram(url):
+    print_colored("\nDownloading from Instagram...", CYAN)
+    try:
+        # Instagram posts (images/videos) are downloaded as .jpg or .mp4 by default using instaloader
+        subprocess.run(['instaloader', '--video-mp4', '--dirname-pattern', './downloads', url], check=True)
+        print_colored("Download complete in MP4 format!", GREEN)
+    except subprocess.CalledProcessError:
+        print_colored("Error downloading Instagram post.", RED)
 
-    # Check if the URL is an Instagram link
-    if is_instagram_url(url):
-        print("Detected Instagram URL.")
-        download_video(url, output_dir)
-    elif 'youtube.com' in url or 'youtu.be' in url:
-        print("Detected YouTube URL.")
-        download_video(url, output_dir)
-    else:
-        print("Unsupported URL. Please enter a valid YouTube or Instagram link.")
-
-if __name__ == "__main__":
-    main()
+# Execute based on user's choice
+if choice == '1':
+    url = input("\nEnter the YouTube video URL: ")
+    download_youtube(url)
+elif choice == '2':
+    url = input("\nEnter the Instagram post URL: ")
+    download_instagram(url)
+elif choice == '3':
+    print_colored("Exiting downloader. Goodbye!", RED)
+    sys.exit(0)
+else:
+    print_colored("Invalid choice! Please try again.", YELLOW)
