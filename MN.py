@@ -57,10 +57,13 @@ def download_youtube(url):
         print_colored("Invalid choice, defaulting to 720p.", YELLOW)
         format_choice = 'bestaudio[ext=m4a]+bestvideo[height<=720][ext=mp4]/best[height<=720]'
 
-    print_colored(f"\nDownloading in {quality_choice}p quality...", CYAN)
+    # Set download path to /storage/emulated/0/Download
+    download_path = "/storage/emulated/0/Download"
+
+    print_colored(f"\nDownloading in {quality_choice}p quality to {download_path}...", CYAN)
     try:
-        # Download the selected format
-        subprocess.run(['yt-dlp', '-f', format_choice, '--merge-output-format', 'mp4', url], check=True)
+        # Download the selected format and specify the output directory
+        subprocess.run(['yt-dlp', '-f', format_choice, '--merge-output-format', 'mp4', '-o', f'{download_path}/%(title)s.%(ext)s', url], check=True)
         print_colored("Download complete in MP4 format!", GREEN)
     except subprocess.CalledProcessError:
         print_colored("Error downloading YouTube video.", RED)
@@ -70,7 +73,8 @@ def download_instagram(url):
     print_colored("\nDownloading from Instagram...", CYAN)
     try:
         # Instagram posts (images/videos) are downloaded as .jpg or .mp4 by default using instaloader
-        subprocess.run(['instaloader', '--video-mp4', '--dirname-pattern', './downloads', url], check=True)
+        download_path = "/storage/emulated/0/Download"
+        subprocess.run(['instaloader', '--video-mp4', '--dirname-pattern', f'{download_path}/%(username)s', url], check=True)
         print_colored("Download complete in MP4 format!", GREEN)
     except subprocess.CalledProcessError:
         print_colored("Error downloading Instagram post.", RED)
