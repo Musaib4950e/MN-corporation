@@ -57,7 +57,7 @@ def download_youtube(url):
         print_colored("Invalid choice, defaulting to 720p.", YELLOW)
         format_choice = 'bestaudio[ext=m4a]+bestvideo[height<=720][ext=mp4]/best[height<=720]'
 
-    # Set download path to /storage/emulated/0/Download
+    # Set download path to /storage/emulated/0/DCIM
     download_path = "/storage/emulated/0/DCIM"
 
     print_colored(f"\nDownloading in {quality_choice}p quality to {download_path}...", CYAN)
@@ -68,15 +68,27 @@ def download_youtube(url):
     except subprocess.CalledProcessError:
         print_colored("Error downloading YouTube video.", RED)
 
-# Define function to download from Instagram
 # Define function to download from Instagram using yt-dlp
 def download_instagram(url):
     print_colored("\nDownloading from Instagram...", CYAN)
     # Set download path
-    download_path = "/storage/emulated/0/DCIM"
+    download_path = "/storage/emulated/0/Download"
     try:
         # Use yt-dlp to download Instagram posts
         subprocess.run(['yt-dlp', '--output', f'{download_path}/%(title)s.%(ext)s', url], check=True)
         print_colored("Download complete!", GREEN)
     except subprocess.CalledProcessError:
         print_colored("Error downloading Instagram post.", RED)
+
+# Execute based on user's choice
+if choice == '1':
+    url = input("\nEnter the YouTube video URL: ")
+    download_youtube(url)
+elif choice == '2':
+    url = input("\nEnter the Instagram post URL: ")
+    download_instagram(url)
+elif choice == '3':
+    print_colored("Exiting downloader. Goodbye!", RED)
+    sys.exit(0)
+else:
+    print_colored("Invalid choice! Please try again.", YELLOW)
