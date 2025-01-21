@@ -58,7 +58,7 @@ def download_youtube(url):
         format_choice = 'bestaudio[ext=m4a]+bestvideo[height<=720][ext=mp4]/best[height<=720]'
 
     # Set download path to /storage/emulated/0/Download
-    download_path = "/storage/emulated/0/Download"
+    download_path = "/storage/emulated/0/DCIM"
 
     print_colored(f"\nDownloading in {quality_choice}p quality to {download_path}...", CYAN)
     try:
